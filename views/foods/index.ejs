@@ -1,0 +1,30 @@
+<% include ../partials/header %>
+ <div class="container">
+     <header class="jumbotron">
+         <div class="container">
+             <h1>Welcome To Food 4 All!</h1>
+             <p>View our hand-picked foods from all over the world</p>
+             <p>
+                <a class="btn btn-primary btn-large" href="/foods/new">Add New Food</a>
+             </p>
+         </div>
+     </header>
+     
+     <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+        <% foods.forEach(function(food){ %>
+            <div class="col-md-3 col-sm-6">
+                <div class="thumbnail" id="indexImg">
+                   <img src="<%= food.image %>">
+                   <div class="caption">
+                       <h4><%= food.name %></h4>
+                   </div>
+                   <p>
+                       <a href="/foods/<%=food._id%>" class='btn btn-primary'>More Info</a>
+                   </p>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</div>
+
+<% include ../partials/footer %>

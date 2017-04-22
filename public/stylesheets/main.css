@@ -1,0 +1,41 @@
+.thumbnail img {
+    width: 100%;
+}
+#indexImg img {
+	height:250px;
+    width: 100%;
+}
+
+.thumbnail {
+    padding: 0;
+}
+
+.thumbnail .caption-full {
+    padding: 9px;
+}
+
+#delete-form {
+    display: inline;
+}
+#map {
+    height: 400px;
+    width: 100%;
+}
+.navbar{
+	background-color: #FDF3E7;
+}
+.jumbotron{
+	background-color: #FDF3E7;
+}
+body{
+	background-color: #ffffff;
+}
+.thumbnail{
+	background-color: #FDF3E7;
+	border: 0 none;
+    box-shadow: none;
+    padding-bottom: 20px;
+}
+.well{
+	background-color: #FDF3E7;
+}

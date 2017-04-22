@@ -1,0 +1,122 @@
+<% include ../partials/header %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    <%
+function timeSince(date) {
+
+  var seconds = Math.floor((new Date() - date) / 1000);
+
+  var interval = Math.floor(seconds / 31536000);
+
+  if (interval > 1) {
+    return interval + " years ago";
+  }
+  interval = Math.floor(seconds / 2592000);
+  if (interval > 1) {
+    return interval + " months ago";
+  }
+  interval = Math.floor(seconds / 86400);
+  if (interval > 1) {
+    return interval + " days ago";
+  }
+  interval = Math.floor(seconds / 3600);
+  if (interval > 1) {
+    return interval + " hours ago";
+  }
+  interval = Math.floor(seconds / 60);
+  if (interval > 1) {
+    return interval + " minutes ago";
+  }
+  return Math.floor(seconds) + " seconds ago";
+}
+%>
+    </script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <p class="lead">Food4All</p>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active">Location</a>
+                <a target = '_blank' href="https://www.yelp.com/search?find_desc=<%= food.name %>" class="list-group-item list-group-item-action">Yelp Search</a>
+                <a target = '_blank' href="https://www.google.com/#q=<%=food.name%>+recipe" class="list-group-item list-group-item-action">Google Recipe</a>
+            </div>
+            <div id='map'>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="thumbnail">
+                <img class="img-responsive" src="<%= food.image %>">
+                <div class="caption-full">
+                    <h4 class="pull-right">$<%= food.cost %></h4>
+                    <h4><a><%=food.name%></a></h4>
+                    <p><%= food.description %></p>
+                    <p>
+                        <em>Submitted By <%= food.author.username %></em>
+                    </p>
+                    <% if(currentUser && food.author.id.equals(currentUser._id)){%>
+                        <a class="btn btn-xs btn-warning" href="/foods/<%= food._id %>/edit">Edit</a>
+                        <form id="delete-form" action="/foods/<%= food._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-xs btn-danger">Delete</button>
+                        </form>
+                   <% }%>
+                </div>
+            </div>
+            <div class="well">
+                <div class="text-right">
+                    <a class="btn btn-success" href="/foods/<%= food._id %>/comments/new">Add New Comment</a>
+                </div>
+                <hr>
+                <% food.comments.reverse().forEach(function(comment){ %>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <strong><%= comment.author.username %></strong>
+                            <span class="pull-right"><%=timeSince(comment.created)%></span>
+                            <p>
+                                <%= comment.text %> 
+                            </p>
+                            <% if(currentUser && comment.author.id.equals(currentUser._id)){%>
+                                <a class="btn btn-xs btn-warning" 
+                                   href="/foods/<%=food._id %>/comments/<%=comment._id %>/edit">Edit</a>
+                                <form id="delete-form" action="/foods/<%=food._id %>/comments/<%=comment._id %>?_method=DELETE" method="POST">
+                                    <input type="submit" class="btn btn-xs btn-danger" value="Delete">
+                                </form>
+                            <% }%>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  function initMap() {
+    var lat = <%= food.lat %>;
+    var lng = <%= food.lng %>;
+    var center = {lat: lat, lng: lng };
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 8,
+        center: center,
+        scrollwheel: false
+    });
+    var contentString = `
+      <strong><%= food.name %><br />
+      <%= food.location %></strong>
+      <p><%= food.description %></p>
+    `
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+    var marker = new google.maps.Marker({
+        position: center,
+        map: map
+    });
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+  }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD36eK7o9rtAcBTVNZ9sh0Q4L0p-sAZ9sE&callback=initMap"></script>
+
+<% include ../partials/footer %>
